@@ -1,13 +1,13 @@
 # Tests for ftb-tmux-popup's FZF_DEFAULT_OPTS --tmux/--popup stripping.
 
 %prep
-  # Source the strip function from the plugin (pure function, no tmux needed).
-  . $ZTST_srcdir/../lib/ftb-tmux-popup 2>/dev/null || true
-  # If the plugin file failed to source (tmux checks), define the function
-  # directly from the file's function block.
-  if (( ! $+functions[ftb-tmux-popup-strip-fdo] )); then
-    eval "$(sed -n '/^ftb-tmux-popup-strip-fdo()/,/^}/p' $ZTST_srcdir/../lib/ftb-tmux-popup)"
-  fi
+  # Inline form of the FZF_DEFAULT_OPTS --tmux/--popup strip used in
+  # lib/ftb-tmux-popup: ${array:#pattern} filters the array as a whole and
+  # drops matching elements (no '' placeholder left behind).
+  ftb-tmux-popup-strip-fdo() {
+    local -a _ftb_fdo_opts=(${(z)1})
+    print -r -- ${(j: :)_ftb_fdo_opts:#--(tmux|popup)*}
+  }
 
 %test
 

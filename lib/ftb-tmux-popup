@@ -29,16 +29,9 @@ fzf_opts=(${${fzf_opts/--height*}/--layout*})
 # Strip --tmux/--popup from FZF_DEFAULT_OPTS before it reaches fzf inside the
 # popup: with use-fzf-default-opts yes, fzf would otherwise open a second
 # (nested) popup inside the outer `tmux popup -E` (see #455, #509).
-ftb-tmux-popup-strip-fdo() {
-  emulate -L zsh -o extended_glob
-  local _ftb_fdo=${1:-}
-  if [[ -n $_ftb_fdo ]]; then
-    local -a _ftb_fdo_opts=(${(z)_ftb_fdo})
-    _ftb_fdo=${(j: :)_ftb_fdo_opts:#--(tmux|popup)*}
-  fi
-  print -r -- "$_ftb_fdo"
-}
-local _ftb_fdo=$(ftb-tmux-popup-strip-fdo "$FZF_DEFAULT_OPTS")
+# ${array:#pattern} filters the array as a whole and drops matching elements.
+local -a _ftb_fdo_opts=(${(z)FZF_DEFAULT_OPTS})
+local _ftb_fdo=${(j: :)_ftb_fdo_opts:#--(tmux|popup)*}
 
 # get position of cursor and size of window
 local -a tmp=($(command tmux display-message -p "#{pane_top} #{cursor_y} #{pane_left} #{cursor_x} #{window_height} #{window_width} #{status} #{status-position}"))
