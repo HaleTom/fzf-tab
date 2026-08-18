@@ -96,5 +96,12 @@
 0:separate-arg kept value round-trips through %q
 >--height 40%
 
+  local -a _r=(${(z)$(ftb-tmux-popup-strip-fdo "--tmux --'has space' --color=fg:1")})
+  print -r -- $#_r
+  print -r -- ${(q)_r}
+0:quoted arg with space stays one element, %q round-trips (no '' placeholder)
+>3
+>--\'has space\' --color=fg:1
+
 %clean
   unfunction ftb-tmux-popup-strip-fdo 2>/dev/null
