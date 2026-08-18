@@ -71,5 +71,30 @@
 0:all four forms stripped
 >
 
+  local -a _r=(${(z)$(ftb-tmux-popup-strip-fdo '--tmux')})
+  print -r -- $#_r
+0:stripped result has zero elements (no '' placeholder)
+>0
+
+  local -a _r=(${(z)$(ftb-tmux-popup-strip-fdo '--tmux=center,50% --popup=bottom,30%')})
+  print -r -- $#_r
+0:all-stripped result has zero elements (no '' placeholder)
+>0
+
+  local -a _r=(${(z)$(ftb-tmux-popup-strip-fdo '--height=40% --color=fg:1')})
+  print -r -- ${(q)_r}
+0:kept args round-trip through %q unchanged
+>--height=40% --color=fg:1
+
+  local -a _r=(${(z)$(ftb-tmux-popup-strip-fdo '--color=fg:1 --popup=center,50% --layout=reverse')})
+  print -r -- ${(q)_r}
+0:kept args with =value round-trip through %q unchanged
+>--color=fg:1 --layout=reverse
+
+  local -a _r=(${(z)$(ftb-tmux-popup-strip-fdo '--height 40% --tmux')})
+  print -r -- ${(q)_r}
+0:separate-arg kept value round-trips through %q
+>--height 40%
+
 %clean
   unfunction ftb-tmux-popup-strip-fdo 2>/dev/null
